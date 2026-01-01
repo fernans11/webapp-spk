@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Alternatif (Produk Sepatu) & Sumber (Wajib)</h4>
+<p class="small-muted">Masukkan produk nyata (bukan dummy) dan sertakan URL sumber (mis. website brand/marketplace resmi/review kredibel).</p>
+
+<div class="row">
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-body">
+        <form method="post">
+          {{ form.csrf_token }}
+          <div class="mb-2">{{ form.name.label }}{{ form.name(class="form-control") }}</div>
+          <div class="mb-2">{{ form.brand.label }}{{ form.brand(class="form-control") }}</div>
+          <div class="mb-2">{{ form.sport.label }}{{ form.sport(class="form-control") }}</div>
+          <hr>
+          <div class="mb-2">{{ form.source_title.label }}{{ form.source_title(class="form-control") }}</div>
+          <div class="mb-2">{{ form.source_url.label }}{{ form.source_url(class="form-control") }}</div>
+          <button class="btn btn-primary">{{ form.submit.label.text }}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="table-responsive">
+      <table class="table table-sm table-striped align-middle">
+        <thead><tr><th>#</th><th>Alternatif</th><th>Info</th><th>Sumber</th><th></th></tr></thead>
+        <tbody>
+          {% for a in items %}
+          <tr>
+            <td>{{ a.id }}</td>
+            <td><b>{{ a.name }}</b></td>
+            <td class="small-muted">{{ a.brand or "-" }} | {{ a.sport or "-" }}</td>
+            <td>
+              <div>{{ a.source_title }}</div>
+              <div class="small-muted"><a href="{{ a.source_url }}" target="_blank">{{ a.source_url }}</a></div>
+            </td>
+            <td>
+              <form method="post" action="{{ url_for('main.alternatives_delete', aid=a.id) }}" onsubmit="return confirm('Hapus alternatif?')">
+                {{ form.csrf_token }}
+                <button class="btn btn-sm btn-outline-danger">Hapus</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

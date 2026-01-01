@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Kriteria & Sumber (Wajib)</h4>
+<p class="small-muted">Isi kriteria berdasarkan referensi/jurnal/standar. Sistem akan menolak perhitungan jika sumber kosong.</p>
+
+<div class="row">
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-body">
+        <form method="post">
+          {{ form.csrf_token }}
+          <div class="mb-2">{{ form.name.label }}{{ form.name(class="form-control") }}</div>
+          <div class="mb-2">{{ form.ctype.label }}{{ form.ctype(class="form-select") }}</div>
+          <div class="mb-2">{{ form.unit.label }}{{ form.unit(class="form-control") }}</div>
+          <hr>
+          <div class="mb-2">{{ form.source_title.label }}{{ form.source_title(class="form-control") }}</div>
+          <div class="mb-2">{{ form.source_url.label }}{{ form.source_url(class="form-control") }}</div>
+          <button class="btn btn-primary">{{ form.submit.label.text }}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="table-responsive">
+      <table class="table table-sm table-striped align-middle">
+        <thead><tr><th>#</th><th>Kriteria</th><th>Tipe</th><th>Sumber</th><th></th></tr></thead>
+        <tbody>
+          {% for c in items %}
+          <tr>
+            <td>{{ c.id }}</td>
+            <td><b>{{ c.name }}</b><div class="small-muted">{{ c.unit or "" }}</div></td>
+            <td>{{ c.ctype }}</td>
+            <td>
+              <div>{{ c.source_title }}</div>
+              <div class="small-muted"><a href="{{ c.source_url }}" target="_blank">{{ c.source_url }}</a></div>
+            </td>
+            <td>
+              <form method="post" action="{{ url_for('main.criteria_delete', cid=c.id) }}" onsubmit="return confirm('Hapus kriteria?')">
+                {{ form.csrf_token }}
+                <button class="btn btn-sm btn-outline-danger">Hapus</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

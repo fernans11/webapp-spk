@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Hasil Ranking (AHP + Profile Matching)</h4>
+<p class="small-muted">Profile ideal ditentukan otomatis: benefit = maksimum, cost = minimum. Skor gap: 1 / (1 + |gap|), lalu dijumlah berbobot AHP.</p>
+
+<div class="alert alert-info">CR AHP terakhir: <b>{{ "%.4f"|format(cr) }}</b></div>
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead><tr><th>Ranking</th><th>Alternatif</th><th>Skor</th><th>Sumber</th></tr></thead>
+    <tbody>
+      {% for r in ranked %}
+      <tr>
+        <td><b>{{ loop.index }}</b></td>
+        <td>
+          <b>{{ r.name }}</b>
+          <div class="small-muted">{{ r.brand or "-" }} | {{ r.sport or "-" }}</div>
+        </td>
+        <td><b>{{ "%.6f"|format(r.score) }}</b></td>
+        <td class="small-muted"><a href="{{ r.source_url }}" target="_blank">Link sumber</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

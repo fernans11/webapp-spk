@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <h3>SPK Pemilihan Produk Sepatu Olahraga</h3>
+    <p class="small-muted">
+      Metode: <b>AHP</b> untuk bobot kriteria dan <b>Profile Matching</b> untuk perangkingan alternatif.
+      Sistem <b>memvalidasi</b> agar kriteria dan alternatif tidak dummy: setiap item wajib memiliki <b>judul sumber</b> dan <b>URL sumber</b>.
+    </p>
+
+    <ol>
+      <li>Input <b>Kriteria + Sumber</b></li>
+      <li>Input <b>Perbandingan Berpasangan</b> (AHP) dan cek <b>CR</b></li>
+      <li>Input <b>Alternatif (sepatu) + Sumber</b></li>
+      <li>Input <b>nilai tiap alternatif</b> untuk semua kriteria</li>
+      <li>Lihat <b>Hasil Ranking</b></li>
+    </ol>
+  </div>
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Status Bobot AHP</h5>
+        {% if last %}
+          <p class="mb-1">Terakhir dihitung: {{ last.created_at.strftime("%Y-%m-%d %H:%M") }}</p>
+          <p class="mb-0">CR: <b>{{ "%.4f"|format(last.cr) }}</b></p>
+        {% else %}
+          <p class="mb-0">Belum ada bobot AHP. Buka menu AHP.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Data Nilai Alternatif per Kriteria</h4>
+<p class="small-muted">Isi nilai numerik untuk setiap alternatif pada seluruh kriteria. Sistem akan menolak jika ada yang kosong.</p>
+
+{% if criteria|length == 0 %}
+  <div class="alert alert-warning">Tambahkan kriteria terlebih dahulu.</div>
+{% elif alternatives|length == 0 %}
+  <div class="alert alert-warning">Tambahkan alternatif terlebih dahulu.</div>
+{% else %}
+<form method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="table-responsive">
+    <table class="table table-bordered align-middle">
+      <thead>
+        <tr>
+          <th>Alternatif</th>
+          {% for c in criteria %}
+            <th>{{ c.name }}<div class="small-muted">{{ c.unit or "" }}</div></th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in alternatives %}
+          <tr>
+            <td><b>{{ a.name }}</b><div class="small-muted">{{ a.brand or "" }}</div></td>
+            {% for c in criteria %}
+              {% set key = (a.id, c.id) %}
+              <td>
+                <input class="form-control" name="v_{{a.id}}_{{c.id}}" value="{{ value_map.get(key, '') }}" required>
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <button type="submit" class="btn btn-primary">Simpan Data</button>
+</form>
+{% endif %}
+{% endblock %}

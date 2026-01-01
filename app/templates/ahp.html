@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h4>AHP - Perbandingan Berpasangan Kriteria</h4>
+<p class="text-muted">
+    Isi nilai skala Saaty 1–9 untuk perbandingan kriteria baris terhadap kolom (hanya segitiga atas).
+</p>
+
+{% if criteria|length < 2 %}
+<div class="alert alert-warning">Tambahkan minimal 2 kriteria.</div>
+{% else %}
+
+<form method="post">
+    <!-- CSRF TOKEN (FIX UTAMA) -->
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th></th>
+                    {% for c in criteria %}
+                    <th>{{ c.name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for ci in criteria %}
+                <tr>
+                    <th>{{ ci.name }}</th>
+                    {% for cj in criteria %}
+                        {% if ci.id == cj.id %}
+                            <td class="text-center">1</td>
+                        {% elif ci.id < cj.id %}
+                            {% set key = (ci.id, cj.id) %}
+                            <td>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    min="0.11"
+                                    max="9"
+                                    class="form-control"
+                                    name="p_{{ ci.id }}_{{ cj.id }}"
+                                    value="{{ current.get(key, '') }}"
+                                    required
+                                >
+                            </td>
+                        {% else %}
+                            <td class="text-center text-muted">auto</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">
+        Hitung Bobot AHP
+    </button>
+</form>
+
+{% if last %}
+<hr>
+<h5>Bobot Kriteria</h5>
+<p><b>CR:</b> {{ "%.4f"|format(last.cr) }}</p>
+<ul>
+    {% for c in criteria %}
+    <li>
+        {{ c.name }} :
+        <b>{{ "%.4f"|format(last_weights.get(c.id|string, 0)) }}</b>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endif %}
+{% endblock %}
